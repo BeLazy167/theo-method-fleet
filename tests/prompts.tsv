@@ -1,0 +1,26 @@
+# prompt<TAB>expected skill or NONE
+# Positives: the skill must fire. Negatives: it must stay silent.
+# Every negative here is a near-miss that shares vocabulary with a description.
+open a pr for this branch	file-pr
+keep an eye on #412 until it's green	babysit-pr
+give me a writeup of the findings I can send to my team	html-communication
+mock up three options for the settings page	html-communication
+here's the plan: https://postplan.dev/abc123	postplan-read
+grab a screenshot of the bug and stick it in the PR	file-upload
+upload the crash log from the app store review to the issue	file-upload
+why do my agents keep breaking my dev server?	audit-agent-history
+I just got a new linux box, get it ready	provision-box
+push the new skill out to all my machines	apply-fleet
+sync my claude config to all my machines	apply-fleet
+what's our PR review process?	NONE
+read https://github.com/foo/bar/blob/main/README.md	NONE
+this deploy is taking forever	NONE
+build me an HTML landing page for the marketing site	NONE
+make the button HTML semantic	NONE
+upload the build to TestFlight	NONE
+summarize this file for me	NONE
+summarize what you changed	NONE
+sync my dotfiles to the server	NONE
+set up a new nextjs project	NONE
+write up the migration plan. HTML	html-communication
+this run is taking forever	NONE

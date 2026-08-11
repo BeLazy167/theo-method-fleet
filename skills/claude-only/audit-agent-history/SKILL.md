@@ -1,6 +1,6 @@
 ---
 name: audit-agent-history
-description: Use when the user wants to know how their agents keep failing, asks to audit past sessions or transcripts, wonders why a task took so long, or wants evidence before editing their global agent instructions.
+description: Use when the user wants to know how their agents keep failing, asks to audit past sessions or transcripts, complains that agents keep making the same mistake, or wants evidence before editing their global agent instructions.
 metadata:
   harness: [claude]
   platform: [darwin, linux]
@@ -70,5 +70,6 @@ When one session clearly went wrong, open it and ask the model directly:
 - Why did you decide this was the right direction?
 - What in context told you that?
 - Categorize every tool call you made into groups. Which groups were wasted?
+- You took far longer than this looked like it needed. Where did the time go?
 
 The answer usually names a stale line in `AGENTS.md` or something misread early that stayed in context.

@@ -9,8 +9,7 @@ metadata:
 
 # File a pull request
 
-Write PRs a human wants to read. The title says why. The description opens with
-the problem, then the fix.
+Write PRs a human wants to read. The title says why. The description opens with the problem, then the fix.
 
 ## Before filing
 
@@ -22,15 +21,21 @@ the problem, then the fix.
 
 Concise, human readable, explains why the change matters.
 
-- Bad: `ws-server: negotiate per-message deflate on the socket`
-- Good: `ws-server: cut websocket frame size 70% with compression`
+BAD
+> ❌  auth: refactor token refresh middleware
+
+GOOD
+> ✅ auth: stop logging users out mid-session on token refresh
 
 ## Descriptions
 
 Open with a plain explanation of the problem, phrased from the user's original prompt. Then explain the fix in one or two sentences. Do not lead with an inventory of what you changed.
 
-- Bad: `Removed implicit workspace carryover from new thread entry points. New threads now inherit only the project from context.`
-- Good: `Starting a thread in an existing worktree ignored my default and reused the old workspace. Now the default always applies.`
+BAD
+> ❌ Removed the implicit cache-key fallback from the resolver and moved key construction into the caller.
+
+GOOD
+> ✅ Two users hitting the same endpoint could see each other's results, because the cache key left out the tenant. It is now part of the key.
 
 Keep the body short. Add a `## Testing` line stating what you actually ran. If you did not run it, say so.
 

@@ -1,6 +1,6 @@
 ---
 name: apply-fleet
-description: Use when the user asks to apply, sync, push, or roll out this fleet repo's skills or agent instruction files to their machines. Not for application deploys or files unrelated to agent configuration.
+description: Use when the user asks to apply, sync, push, or roll out this repo's agent skills or instruction files to their machines. Not for application deploys or files unrelated to agent configuration.
 metadata:
   harness: [claude, codex]
   platform: [darwin, linux]
