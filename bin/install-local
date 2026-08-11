@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Install this machine's snapshot into the local harness directories.
+#
+# On the leader, also install the command-center skills, which are deliberately
+# absent from every snapshot so they can never be synced to another box.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+[ -d snapshots/claude ] || ./bin/render
+
+LEADER="${FLEET_LEADER:-0}"
+
+for harness in claude codex; do
+  snap="snapshots/$harness"
+  [ -d "$snap" ] || continue
+  dest="$HOME/.$harness"
+  mkdir -p "$dest/skills"
+
+  rsync -a --delete "$snap/skills/" "$dest/skills/"
+  for f in "$snap"/*.md; do
+    [ -e "$f" ] && cp "$f" "$dest/$(basename "$f")"
+  done
+  echo "installed $snap -> $dest"
+
+  if [ "$LEADER" = "1" ]; then
+    for skill in skills/command-center/*/; do
+      [ -f "$skill/SKILL.md" ] || continue
+      cp -R "$skill" "$dest/skills/$(basename "$skill")"
+    done
+    echo "installed command-center skills -> $dest/skills"
+  fi
+done
+
+[ "$LEADER" = "1" ] || echo "note: set FLEET_LEADER=1 to also install command-center skills"

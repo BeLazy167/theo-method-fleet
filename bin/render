@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+"""Render corefiles/ and skills/ into one flattened snapshot per harness.
+
+The snapshot is the complete intended state of a harness directory on a machine.
+That is what makes `rsync --delete` safe in apply-fleet: anything on the box that
+is not in the snapshot should not be there.
+
+Routing comes from each skill's frontmatter `metadata`, not from its directory:
+
+    metadata:
+      harness: [claude, codex]
+      platform: [darwin, linux]
+      scope: fleet | command-center
+
+Skills scoped to command-center are excluded from every snapshot, because they
+install locally on the leader and never travel.
+"""
+
+import re
+import shutil
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+HARNESSES = ("claude", "codex")
+
+# Only "AGENTS.md" is universal; CLAUDE.md is the Claude-specific pointer.
+CORE = {"claude": ["AGENTS.md", "CLAUDE.md"], "codex": ["AGENTS.md"]}
+
+
+def parse_frontmatter(text: str) -> dict:
+    """Pull the small, known subset of YAML we use out of a SKILL.md header.
+
+    Handles scalars (`name: x`) and inline lists (`key: [a, b]`), nested one
+    level under `metadata:`. Anything richer is a signal the schema drifted, so
+    it is ignored rather than guessed at.
+    """
+    if not text.startswith("---\n"):
+        return {}
+    body = text.split("---\n", 2)[1]
+    out: dict = {}
+    section = out
+    for line in body.splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        indented = line.startswith((" ", "\t"))
+        m = re.match(r"\s*([\w-]+):\s*(.*)$", line)
+        if not m:
+            continue
+        key, raw = m.group(1), m.group(2).strip()
+        target = out.setdefault("metadata", {}) if indented else out
+        if not raw:
+            section = out.setdefault(key, {}) if not indented else target
+            continue
+        if raw.startswith("[") and raw.endswith("]"):
+            value = [v.strip() for v in raw[1:-1].split(",") if v.strip()]
+        else:
+            value = raw
+        target[key] = value
+    return out
+
+
+def main() -> int:
+    skills = sorted(ROOT.glob("skills/*/*/SKILL.md"))
+    if not skills:
+        print("no skills found", file=sys.stderr)
+        return 1
+
+    counts = {h: 0 for h in HARNESSES}
+    for harness in HARNESSES:
+        dest = ROOT / "snapshots" / harness
+        if dest.exists():
+            shutil.rmtree(dest)
+        (dest / "skills").mkdir(parents=True)
+
+        for name in CORE[harness]:
+            src = ROOT / "corefiles" / name
+            if src.exists():
+                shutil.copy2(src, dest / name)
+
+        for path in skills:
+            fm = parse_frontmatter(path.read_text())
+            meta = fm.get("metadata", {})
+            name = fm.get("name") or path.parent.name
+
+            if meta.get("scope") == "command-center":
+                continue
+            if harness not in meta.get("harness", HARNESSES):
+                continue
+
+            target = dest / "skills" / name
+            target.mkdir(parents=True, exist_ok=True)
+            for f in path.parent.iterdir():
+                if f.is_file():
+                    shutil.copy2(f, target / f.name)
+            counts[harness] += 1
+
+    for harness in HARNESSES:
+        print(f"snapshots/{harness}: {counts[harness]} skills")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
