@@ -1,6 +1,6 @@
 ---
 name: file-upload
-description: Use when the user asks to upload a file or share a screenshot, screen recording, log, or build artifact, or when a PR description needs an embedded image or video.
+description: Use when the user asks to upload or share a screenshot, screen recording, log, or local file so a person can look at it, or when a PR or issue needs an embedded image or video. Not when the upload is itself the release or distribution step.
 metadata:
   harness: [claude, codex]
   platform: [darwin, linux]

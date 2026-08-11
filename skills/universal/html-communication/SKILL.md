@@ -1,6 +1,6 @@
 ---
 name: html-communication
-description: Use when the user asks to communicate through an HTML document, or wants a plan, spec, write-up, findings, summary, report, comparison, or set of UI mocks to read outside the terminal. Also use if they mention HTML with no other context.
+description: Use when the user asks to communicate through an HTML document, or wants a plan, spec, write-up, findings, summary, report, comparison, or UI mocks to read outside the terminal. Also use when they append "HTML" to a prompt with no other context. Mocks are in scope only when meant to be viewed in a browser. Not for HTML that ships as part of the product, or the routine end-of-turn summary you write in chat.
 metadata:
   harness: [claude, codex]
   platform: [darwin, linux]

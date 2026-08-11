@@ -1,6 +1,6 @@
 ---
 name: postplan-read
-description: Use when the user supplies a postplan URL or any hosted HTML write-up link and expects you to read its contents.
+description: Use when the user supplies a postplan URL, or a link to a hosted HTML plan, spec, or write-up, and expects you to read it. Not for source files, docs sites, or repo browsing.
 metadata:
   harness: [claude, codex]
   platform: [darwin, linux]
