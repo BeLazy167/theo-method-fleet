@@ -32,7 +32,7 @@ GOOD
 Open with a plain explanation of the problem, phrased from the user's original prompt. Then explain the fix in one or two sentences. Do not lead with an inventory of what you changed.
 
 BAD
-> ❌ Removed the implicit cache-key fallback from the resolver and moved key construction into the caller.
+> ❌ Removed the implicit cache-key fallback from `resolveEntity` and every downstream caller (`getUser`, `getOrg`, `listMembers`, the batch loader). Key construction moves into `CacheKey.from()`, which now takes an explicit tenant argument. Deleted `legacyKeyFor`, `withImplicitTenant`, and the v1 resolver's fallback branch. Updated 14 call sites and their fixtures.
 
 GOOD
 > ✅ Two users hitting the same endpoint could see each other's results, because the cache key left out the tenant. It is now part of the key.
