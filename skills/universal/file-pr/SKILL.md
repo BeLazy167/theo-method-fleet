@@ -22,7 +22,7 @@ Write PRs a human wants to read. The title says why. The description opens with 
 Concise, human readable, explains why the change matters.
 
 BAD
-> ❌  auth: refactor token refresh middleware
+> ❌ auth: refactor token refresh middleware
 
 GOOD
 > ✅ auth: stop logging users out mid-session on token refresh
