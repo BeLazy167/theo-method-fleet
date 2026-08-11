@@ -1,20 +1,22 @@
 ---
 name: postplan-read
-description: Use when the user supplies a postplan URL, or a link to a hosted HTML plan, spec, or write-up, and expects you to read it. Not for source files, docs sites, or repo browsing.
+description: Use when the user provides a postplan.dev URL to read.
 metadata:
   harness: [claude, codex]
   platform: [darwin, linux]
   scope: fleet
+  requires: "curl"
 ---
 
-# Read a hosted write-up
+# Postplan Read
 
-Fetch the HTML with the shell. Do not use web search. Do not open a browser.
+Fetch the uploaded HTML with the shell. Do not use web search or a browser.
 
-```bash
-curl -sfL "${URL%/}/raw"
-```
+1. Remove a trailing slash, then append `/raw` unless the URL already ends in
+   `/raw`.
+2. Run `curl --fail --silent --show-error --location --max-time 30 --output
+   /tmp/postplan.html '<raw-url>'`.
+3. Read `/tmp/postplan.html` and continue the user's request from its contents.
 
-Strip the trailing slash, then append `/raw`, unless the URL already ends in `/raw`. If `/raw` 404s, fetch the bare URL.
-
-Read the content before you act on it. If it is a plan, follow it. If it is a set of mocks, wait for the user to pick a letter.
+If `curl` fails, report its actual status or network error. Do not substitute
+search results.

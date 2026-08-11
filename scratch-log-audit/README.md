@@ -1,11 +1,7 @@
----
-name: audit-agent-history
-description: Use when the user wants to know how their agents keep failing, asks to audit past sessions or transcripts, complains that agents keep making the same mistake, or wants evidence before editing their global agent instructions.
-metadata:
-  harness: [claude]
-  platform: [darwin, linux]
-  scope: fleet
----
+# Scratch log audit
+
+This is working material for auditing real agent transcripts before changing
+global instructions. It is deliberately not a globally installed skill.
 
 # Audit agent history for failure modes
 

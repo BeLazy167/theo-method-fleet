@@ -17,7 +17,7 @@ Defined so we describe things the same way. Use these words back to me.
 - **core file** — `corefiles/AGENTS.md`, the instructions loaded on every machine for every project.
 - **project file** — an `AGENTS.md` inside a real codebase. Overrides the core file.
 - **snapshot** — the rendered per-harness copy in `snapshots/`. What actually lands on a box.
-- **apply** — render the snapshots and sync them out. See the `apply-fleet` skill.
+- **apply** — render the snapshots and sync the selected skill directories to the machines in `boxes/machines.json`.
 
 ## Layout
 
@@ -44,7 +44,7 @@ Each tier directory has a `README.md` saying what belongs there and where it ins
 2. **One skill, one trigger.** If a skill answers two different requests, split it. `file-pr` and `babysit-pr` are separate because I usually want one, not both.
 3. **Bad example, good example.** Models steer better on a contrasting pair than on a paragraph of rules. Pull the bad example from something that actually annoyed me.
 4. **Shorter is better, as long as the context survives.** Delete lines that restate the obvious. Keep the line that names a specific past failure.
-5. **Do not add a skill for a thing that happened once.** Add it when the same correction has been made three times. Use the `audit-agent-history` skill to check whether it really recurs.
+5. **Do not add a skill for a thing that happened once.** Add it when the same correction has been made three times. Use `scratch-log-audit/` to check whether it really recurs.
 6. **Routing lives in frontmatter, not in the path.** Every skill carries `metadata.harness`, `metadata.platform`, and `metadata.scope`, plus `metadata.requires` when it depends on credentials. Set them when you add a skill. When a skill stops being tier-specific, move the directory *and* update `metadata.scope` — a moved directory with stale metadata still routes the old way.
 
 ## Rules for editing global files
@@ -58,4 +58,4 @@ Preferences in the global file are defaults, not laws. My prompt overrides them.
 - Make changes and stop. Do not commit, push, or apply unless I say so.
 - Never apply to machines with a dirty working tree.
 - When you change a skill's description, tell me the old and new text side by side. Descriptions are the highest-leverage lines in the repo.
-- When you add or remove a skill, update the tier tables in this file and in `README.md` if they drift.
+- When you add or remove a skill, update the root `README.md` skill table and the affected tier `README.md`.

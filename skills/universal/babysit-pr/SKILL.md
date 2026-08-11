@@ -1,42 +1,44 @@
 ---
 name: babysit-pr
-description: Use when the user asks to babysit, monitor, watch, shepherd, or land a PR, or to get a PR green.
+description: Monitor a pull request through review and CI. Use when the user asks to monitor, watch, or babysit a PR.
 metadata:
   harness: [claude, codex]
   platform: [darwin, linux]
   scope: fleet
 ---
 
-# Babysit a pull request
+# Babysit PR
 
-Loop until CI is green and every required reviewer has approved. Report back
-when it lands or when you need a decision.
+All the repos we work in have various AI review bots. They're helpful, even if
+they are not always right.
 
-## The loop
+If your harness offers tools to monitor a PR, use them so you can respond when
+comments arrive. Otherwise, poll the PR for new comments and checks.
 
-1. If the harness has PR monitoring tools, use them so you react when comments arrive.Otherwise poll every few minutes with `gh pr view` and `gh pr checks`.
-2. Only act on checks and comments newer than the latest push. Ignore stale ones.
-3. Verify every bot finding against the source before you change code. Review bots are helpful and often wrong.
-4. Fix real findings and real CI failures. Tell repository failures apart from infrastructure flakes. Re-run flakes once; do not "fix" them with code.
-5. Watch `main`. Rebase when the branch goes stale or conflicts appear.
-6. Repeat until green and approved.
+Only act on checks and comments newer than the latest push. Verify every bot
+finding against the source before changing code. Fix real findings and CI
+failures, distinguish repository failures from infrastructure flakes, and reply
+with a written reason when dismissing false positives.
 
-## Replying
+Keep an eye on changes to `main` and rebase when needed. If an overlapping PR
+makes this one obsolete, stop monitoring, report it to the user, and ask before
+closing the PR unless closure was explicitly authorized.
 
-When you dismiss a finding, reply with the reason and resolve the comment. Do
-not silently ignore it.
+If a review bot leaves feedback you believe is not worth addressing, reply and
+resolve the comment. Format comments left on the user's behalf as:
 
-Format every comment left on the user's behalf like this:
+```md
+[MODEL-SLUG] RESPONDING ON BEHALF OF [USER]
 
+[actual reply]
 ```
-**<model-slug> responding on behalf of <your name>**
 
-<reply>
-```
+Screenshots and videos help as well. Use the `file-upload` skill when needed.
 
-## Rules
+Do not let review feedback expand the PR beyond the user's original goal.
+Address real shortcomings, but avoid scope creep.
 
-- Do not let review feedback expand the PR beyond the user's original goal. Address real shortcomings. Refuse scope creep and say why in the thread.
-- Not every comment is mission critical. Weigh it against the size of the PR.
-- If another PR lands and makes this one obsolete, stop monitoring, report to the user, and ask before closing. Close only if the user authorized it.
-- Never merge unless the user asked you to merge.
+If nothing has changed, stay quiet rather than posting filler comments. Stop
+when the review bots and required checks are green on the latest commit. Merge
+only when the user explicitly requested it; otherwise report that the PR is
+ready.

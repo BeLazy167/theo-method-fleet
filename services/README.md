@@ -1,67 +1,38 @@
-# Services
+# Services used by the video-matched skills
 
-Two skills call an HTTP endpoint. Neither works until you host one. These are the contracts, so any implementation will do — a Cloudflare Worker over R2, an S3 bucket behind a Lambda, or a small box on the tailnet.
-
-Both are private. Put them behind a bearer token and never commit the token.
+The public workflows shown in the video use Theo's file host and the public
+PostPlan CLI. This repo contains no service implementation and no credentials.
 
 ## File host
 
-Used by the `file-upload` skill.
-
-**Request**
-
-```
-POST $FILE_HOST_URL
-Authorization: Bearer $FILE_HOST_TOKEN
-Content-Type: multipart/form-data
-  file=@<binary>
-  name=<basename, e.g. login-flow.mp4>
-```
-
-**Response**
-
-`200` with the public URL as the entire body. No JSON wrapper, so the skill can paste the body straight into a PR.
-
-**Behavior**
-
-- Slugify `name` and append a random suffix, so callers never need unique names.
-- Serve with the right `Content-Type`. GitHub only renders `.mp4` inline when the type is correct.
-- Public read, no listing.
-
-## Write-up host
-
-Used by the `html-communication` and `postplan-read` skills.
-
-**Request**
-
-```
-POST $POSTPLAN_HOST/upload
-Authorization: Bearer $POSTPLAN_TOKEN
-Content-Type: multipart/form-data
-  file=@<plan.html>
-  path=<stable slug>
-```
-
-**Response**
-
-`200` with the public URL as the entire body.
-
-**Behavior**
-
-- The same `path` overwrites in place, so a URL stays stable while a document is iterated on. This is the whole point — the user keeps one tab open.
-- `GET <url>` serves the rendered HTML.
-- `GET <url>/raw` serves the same bytes as `text/plain`, so an agent can read it with `curl` instead of a browser.
-- Cap uploads at 512KB and reject anything that is not HTML.
-
-## Environment
-
-Set these on the machines that should have the skills. `apply-fleet` does not sync secrets.
+`file-upload` sends a file directly to the basename URL:
 
 ```sh
-export FILE_HOST_URL=...
-export FILE_HOST_TOKEN=...
-export POSTPLAN_HOST=...
-export POSTPLAN_TOKEN=...
+curl -sS --fail-with-body -X PUT -T ./login-flow.mp4 \
+  -H "X-Upload-Token: $FILE_HOST_TOKEN" \
+  "https://files.tslop.org/login-flow.mp4"
 ```
 
-These are declared in each skill's `metadata.requires`, so a machine without them does not get the skill at all. If a variable goes missing after install, the skills are written to tell you rather than guess a host. Keep it that way.
+The response body is the permanent public URL. The host slugifies the basename
+and adds a random suffix. Set `FILE_HOST_TOKEN` only on machines that should
+receive this skill; never commit or sync it.
+
+## PostPlan
+
+`html-communication` publishes through the public npm CLI:
+
+```sh
+npx postplan upload ./plan.html
+npx postplan upload ./plan.html --new  # create a separate draft
+npx postplan auth login                # only when authentication is needed
+```
+
+The CLI keeps stable draft mappings in `~/.postplan`, so re-uploading the same
+absolute file path updates the existing URL. `postplan-read` fetches a supplied
+`postplan.dev` URL with `curl`; it does not need a private service token.
+
+## Requirements
+
+- `FILE_HOST_TOKEN` for `file-upload`
+- Node.js and `npx` for `html-communication`
+- `curl` for `postplan-read`

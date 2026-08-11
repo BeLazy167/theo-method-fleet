@@ -1,5 +1,5 @@
 {
-  "$comment": "Source of truth for the fleet. apply-fleet and provision-box read this.",
+  "$comment": "Source of truth for provision-box, ccusage-fleet, and fleet sync.",
   "machines": [
     {
       "name": "command-center",
@@ -7,10 +7,21 @@
       "color": "#7c5cff",
       "role": "leader",
       "specs": "M-series laptop, 36GB RAM",
-      "connection": ["local", "tailscale"],
-      "harnesses": ["claude-code", "codex"],
-      "tiers": ["universal", "claude-only", "command-center"],
-      "notes": "Only box that runs fleet sync. Holds FILE_HOST_TOKEN and POSTPLAN_TOKEN."
+      "connection": [
+        "local",
+        "tailscale"
+      ],
+      "harnesses": [
+        "claude",
+        "codex"
+      ],
+      "tiers": [
+        "universal",
+        "claude-only",
+        "command-center"
+      ],
+      "notes": "Only box that runs fleet sync. Holds FILE_HOST_TOKEN and PostPlan CLI authentication.",
+      "platform": "darwin"
     },
     {
       "name": "workhorse",
@@ -18,10 +29,20 @@
       "color": "#00c2a8",
       "role": "dev",
       "specs": "32 threads, 64GB RAM",
-      "connection": ["tailscale", "ssh"],
-      "harnesses": ["claude-code", "codex"],
-      "tiers": ["universal", "claude-only"],
-      "notes": "Does most long-running work. Never kill processes here without checking."
+      "connection": [
+        "tailscale",
+        "ssh"
+      ],
+      "harnesses": [
+        "claude",
+        "codex"
+      ],
+      "tiers": [
+        "universal",
+        "claude-only"
+      ],
+      "notes": "Does most long-running work. Never kill processes here without checking.",
+      "platform": "linux"
     },
     {
       "name": "runner",
@@ -29,10 +50,17 @@
       "color": "#f5a524",
       "role": "headless",
       "specs": "8 vCPU cloud box",
-      "connection": ["tailscale"],
-      "harnesses": ["codex"],
-      "tiers": ["universal"],
-      "notes": "Batch jobs and scheduled runs. No interactive sessions."
+      "connection": [
+        "tailscale"
+      ],
+      "harnesses": [
+        "codex"
+      ],
+      "tiers": [
+        "universal"
+      ],
+      "notes": "Batch jobs and scheduled runs. No interactive sessions.",
+      "platform": "linux"
     }
   ]
 }

@@ -2,11 +2,11 @@
 
 A **fleet repo** template: one place to keep your global agent instructions and your skills, tiered and synced to every machine you work on.
 
-Structured after the approach [Theo describes in this video](https://youtu.be/e1snsuY4lTI).
+Matched to the public setup Theo shows in [this video](https://youtu.be/e1snsuY4lTI): all 615 five-second samples and the aligned English transcript were audited. The global fleet skill inventory, visible descriptions, disclosed body rules, tier layout, and public service commands follow that evidence.
 
-> **Not affiliated with Theo or T3.** These are not his files. He deliberately does not publish his global `AGENTS.md` or his skills, and this repo does not reproduce them. What it implements is the *approach* he describes — the repo layout, the per-skill routing, the render-and-sync pipeline — with placeholder content written from scratch for you to replace.
+> **Not affiliated with Theo or T3.** Private machine details, credentials, and text that never appears or is never read in the video cannot be recovered byte-for-byte. Those parts remain safe fleet-local configuration rather than guesses.
 
-The one part of his setup that *is* public is the project-level [`AGENTS.md` in t3code](https://github.com/pingdotgg/t3code/blob/main/AGENTS.md). Read that one directly; `examples/project-agents-md/` covers the same ground as a fill-in template.
+The project-level [`AGENTS.md` in t3code](https://github.com/pingdotgg/t3code/blob/main/AGENTS.md) and its project-only `test-t3-app` / `test-t3-mobile` skills are not global fleet skills, so they are not copied into this inventory.
 
 ## How to use this
 
@@ -14,13 +14,13 @@ Fork it, then delete my opinions and write yours. Every rule in `corefiles/` and
 
 That is not modesty, it is the whole point. These files shape how every agent behaves across everything you do, and the useful ones encode failures you have actually hit — your models, your repos, your habits. A rule copied from a stranger fixes a problem you may not have, and costs context on every single request forever.
 
-The one step that makes this yours is `audit-agent-history`: point it at your own session transcripts, find what your agents actually get wrong, and write rules for that. Start there.
+The one step that makes this yours is the workflow in `scratch-log-audit/`: point it at your own session transcripts, find what your agents actually get wrong, and write rules for that. Start there.
 
 ## What you get
 
 - A layout that scales past one machine, with per-skill routing.
 - A render + sync pipeline where `rsync --delete` is actually safe.
-- Eight skills as worked examples of description-as-trigger.
+- Seven global fleet skills shown in the video, with matching triggers and workflows.
 - A project-level `AGENTS.md` template with the sections that matter.
 
 ## Layout
@@ -44,25 +44,24 @@ metadata:
   harness: [claude, codex]      # which harnesses get it
   platform: [darwin, linux]     # which OSes it can run on
   scope: fleet                  # fleet = every box, command-center = leader only
-  requires: [API_TOKEN]         # optional: env vars the skill cannot work without
+  requires: "API_TOKEN in the environment"  # optional runtime prerequisite
 ```
 
 A skill listing `requires` is rendered but not installed on a machine where those variables are unset — a skill that can only fail is worse than a missing one, since it still costs description tokens on every request.
 
-`apply-fleet` renders those into `snapshots/<harness>/`, then rsyncs each snapshot out. The snapshot is a complete intended state, which is what makes `--delete` safe on the target.
+`bin/render` produces `snapshots/<harness>/`. When syncing, apply `rsync --delete` only to the fleet-managed `skills/` subtree and copy root instruction files separately; a harness home contains unrelated state that must survive.
 
 ## Skills
 
 | Skill | Tier | Fires when |
 |---|---|---|
+| `babysit-pr` | universal | asked to monitor, watch, or babysit a PR |
 | `file-pr` | universal | asked to file, open, or create a PR |
-| `babysit-pr` | universal | asked to babysit, monitor, or watch a PR |
-| `html-communication` | universal | a plan, report, or set of UI mocks should be read outside the terminal |
-| `postplan-read` | universal | given a hosted write-up URL to read |
-| `file-upload` | universal | a screenshot, recording, or artifact needs a public URL |
-| `audit-agent-history` | claude-only | asked how agents keep failing, or before editing global files |
+| `file-upload` | universal | asked to upload a file, or a PR description needs one |
+| `html-communication` | universal | asked to communicate through HTML, including a bare `HTML` directive |
+| `postplan-read` | universal | given a `postplan.dev` URL to read |
+| `ccusage-fleet` | command-center | asked for fleet-wide agent usage, tokens, or cost |
 | `provision-box` | command-center | a new or reimaged machine needs setup |
-| `apply-fleet` | command-center | asked to sync this repo out to the machines |
 
 ## The three ideas worth keeping
 
@@ -76,11 +75,11 @@ A skill listing `requires` is rendered but not installed on a machine where thos
 
 ```sh
 ./bin/render          # build snapshots/ from corefiles/ and skills/
-./bin/install-local   # link this machine's snapshot into ~/.claude and ~/.codex
+FLEET_LEADER=1 ./bin/install-local   # install snapshots plus command-center skills here
 ```
 
-Then edit `boxes/machines.json` for your real machines, and stand up the two endpoints in `services/README.md` if you want the upload skills to work.
+Then edit `boxes/machines.json` for your real machines, set `FILE_HOST_TOKEN` where File Upload should exist, and authenticate the PostPlan CLI if publishing requires it.
 
 ## Where to start
 
-Run the `audit-agent-history` skill against your own transcripts before you write a single rule. Rules written from memory fix problems you do not have.
+Use `scratch-log-audit/` against your own transcripts before you write a new global rule. Rules written from memory fix problems you do not have.

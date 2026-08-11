@@ -18,18 +18,14 @@ Paste the judge prompt into a fresh agent with no other context, save its reply,
 
 ## What the current set found
 
-23 prompts, 11 positives and 12 traps, run across six independent judges. All 23 land correctly, but the useful output was never the score — it was the near-miss reasoning and the confidence ratings. A correct answer at low confidence means the description decided narrowly and will break on the next phrasing.
+The suite has 23 prompts: at least one positive for every disclosed global skill plus near-miss traps. Rerun it after any description change. The useful output is the near-miss reasoning and confidence ratings; a correct answer at low confidence means the description decided narrowly and may break on the next phrasing.
 
-Three defects it caught, each a description flaw rather than a judgment error:
-
-- `file-upload` said "build artifact", which matched "upload the build to TestFlight" on two literal words with entirely the wrong intent.
-- `apply-fleet` said "sync" with nothing scoping it, so it reached for "sync my dotfiles to the server".
-- `postplan-read` said "any hosted HTML write-up link", which covered ordinary repo files.
+The near-miss cases guard the important boundaries: File Upload is not an app-release step, HTML Communication does not write product HTML, PostPlan Read does not cover arbitrary web pages, and ccusage-fleet is about agent usage rather than machine health.
 
 ## Two lessons worth keeping
 
-**Negative clauses over-suppress.** Every "Not for X" added in the first fix round silently broke a case the skill *should* handle. `apply-fleet` excluded "dotfiles" — but `~/.claude/CLAUDE.md` is a dotfile. `html-communication` excluded product HTML while listing UI mocks, which are mocks of the product. Write the exclusion against the skill's purpose, not against the trap you just saw.
+**Negative clauses over-suppress.** Every "Not for X" added in the first fix round silently broke a case the skill *should* handle. `html-communication` excluded product HTML while listing UI mocks, which are mocks of the product. Write the exclusion against the skill's purpose, not against the trap you just saw.
 
 **Test the act, not the noun.** "Not for build artifacts" is wrong because a crash log attached to an issue is a build artifact that should absolutely be uploaded. "Not when the upload is itself the release step" is right, because it names what the user is doing rather than what they are holding.
 
-A corollary: a description can be too *narrow* in a way that is invisible without a test. `audit-agent-history` briefly gained "wonders why an agent run took so long" as a trigger, which turned out to match every slowness complaint. It moved to the skill body, where a use case belongs. Triggers and use cases are not the same thing.
+A description can also be too narrow in ways no happy-path test reveals. Triggers and use cases are not the same thing; keep concrete invocation language in descriptions and supporting cases in the body.

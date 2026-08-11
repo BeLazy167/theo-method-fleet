@@ -1,39 +1,67 @@
 ---
 name: html-communication
-description: Use when the user asks to communicate through an HTML document, or wants a plan, spec, write-up, findings, summary, report, comparison, or UI mocks to read outside the terminal. Also use when they append "HTML" as a bare directive at the end of a prompt. Mocks are in scope only when meant to be viewed in a browser. Not for HTML that ships as part of the product, or the routine end-of-turn summary you write in chat.
+description: Use when the user asks to communicate through an HTML document, or if they mention "HTML" with no additional context.
 metadata:
   harness: [claude, codex]
   platform: [darwin, linux]
   scope: fleet
-  requires: [POSTPLAN_HOST, POSTPLAN_TOKEN]
+  requires: "npx (postplan is run via npx)"
 ---
 
-# Communicate in HTML
+# HTML Communication
 
-Terminal output is a bad place to read a long document. Write one self-contained HTML file, upload it, and hand back the URL.
+## When to Use
 
-## Rules
+Use this skill when the user wants a plan, spec, write-up, findings, summary,
+report, comparison, or set of UI mocks presented as readable HTML.
 
-- One file. Self-contained. No external scripts, fonts, or stylesheets. Cap at 512KB.
-- Write it like a spec, not a landing page. No hero sections. No marketing copy.
-- Dark background, high contrast text. Readable line length. Real headings.
-- Keep one file across iterations so the URL stays stable. Edit and re-upload the same path instead of creating a new one.
-- Never open a browser to check it. Never claim the document is hosted before the upload command succeeds.
+Do not use it for HTML that ships as part of a product.
 
-## UI mocks
+## Document
 
-When the user asks for design options, render them in one file, labeled `A`,
-`B`, `C`. Lay them out for direct comparison, not stacked pages. The user replies with letters, so the labels must be obvious and unique.
+Create one self-contained HTML file, capped at 512 KB.
 
-## Upload
+- Write it like a spec, not a landing page: dense, scannable, no hero,
+  decorative chrome, marketing voice, or em dashes.
+- Default to true black (`#000`), white primary text, and dark gray only for
+  secondary surfaces or accents.
+- Make it mobile-readable with a responsive viewport and no fixed-width layout.
+- Use semantic HTML, inline CSS, inline SVG, and HTTPS or data-URL images.
+- Use an inline classic script only when interactivity materially helps. Keep
+  scripted pages useful without JavaScript; the sandbox blocks storage, fetch,
+  workers, frames, forms, and popups.
+- In script-free files, give external links `target="_blank"` and
+  `rel="noopener noreferrer"`. If any script exists, omit `target="_blank"`.
 
-```bash
-curl -sf -X POST "$POSTPLAN_HOST/upload" \
-  -H "Authorization: Bearer $POSTPLAN_TOKEN" \
-  -F "file=@plan.html" \
-  -F "path=<stable-slug>"
-```
+Never include external or module scripts, inline event handlers, `javascript:`
+URLs, forms, frames, embeds, objects, applets, meta refresh, linked stylesheets,
+secrets, private URLs, or local filesystem paths.
 
-Return the URL from the response body. Nothing else.
+## UI Mocks
 
-Requires `POSTPLAN_HOST` and `POSTPLAN_TOKEN`. If either is unset, say so and give the user the local file path instead. Do not guess a host.
+When the user asks for variants:
+
+- Render real styled variants, not descriptions.
+- Label them `A`, `B`, `C`... for easy selection.
+- Lay them out for direct comparison.
+- Keep one file across iterations so its PostPlan URL stays stable.
+
+## Publish
+
+The user has given standing permission to upload every artifact created or
+updated with this skill. Upload is required, including in auto mode. Do not ask
+for separate permission or stop at the local file.
+
+1. Write the HTML file locally.
+2. Run `npx postplan upload <file-path>`.
+3. Report the local path and returned PostPlan URL.
+
+Re-upload the same absolute path to update the existing URL. Use
+`npx postplan upload <file-path> --new` only when a new draft is wanted.
+
+If validation fails, fix the markup and retry. If a scripted upload needs
+authentication, ask the user to run `npx postplan auth login`, then retry
+without removing the requested interactivity.
+
+Never open a browser or claim the document is hosted before upload succeeds.
+Do not verify in a browser unless the user asks.

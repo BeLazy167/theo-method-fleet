@@ -2,8 +2,9 @@
 """Render corefiles/ and skills/ into one flattened snapshot per harness.
 
 The snapshot is the complete intended state of a harness directory on a machine.
-That is what makes `rsync --delete` safe in apply-fleet: anything on the box that
-is not in the snapshot should not be there.
+Snapshots are complete only for the fleet-managed files they contain. Sync the
+`skills/` directory with `--delete`; copy root Markdown separately so unrelated
+harness state is never deleted.
 
 Routing comes from each skill's frontmatter `metadata`, not from its directory:
 
@@ -90,16 +91,16 @@ def main() -> int:
                 continue
 
             target = dest / "skills" / name
-            target.mkdir(parents=True, exist_ok=True)
-            for f in path.parent.iterdir():
-                if f.is_file():
-                    shutil.copy2(f, target / f.name)
+            shutil.copytree(path.parent, target, dirs_exist_ok=True)
             counts[harness] += 1
 
             # A skill that needs credentials is still rendered, because whether a
-            # given box has them is not knowable here. install-local and
-            # apply-fleet read this file and skip what the target cannot satisfy.
+            # given box has them is not knowable here. Record environment-variable
+            # requirements for install-local. Video-matched frontmatter expresses
+            # requirements as prose, so extract only shell-style variable names.
             required = meta.get("requires") or []
+            if isinstance(required, str):
+                required = re.findall(r"\b[A-Z][A-Z0-9_]{2,}\b", required)
             if required:
                 gated.append(f"{name} {' '.join(required)}")
 
