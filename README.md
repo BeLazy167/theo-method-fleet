@@ -1,13 +1,21 @@
-# theo-claude
+# theo-method-fleet
 
 A **fleet repo** template: one place to keep your global agent instructions and
 your skills, tiered and synced to every machine you work on.
 
 Structured after the approach [Theo describes in this
-video](https://youtu.be/e1snsuY4lTI). To be clear about what this is: Theo
-deliberately does not publish his own agent files, and this is not a copy of
-them. It is an independent, working implementation of the *approach* — the repo
-layout, the routing, the sync — with placeholder content that you replace.
+video](https://youtu.be/e1snsuY4lTI).
+
+> **Not affiliated with Theo or T3.** These are not his files. He deliberately
+> does not publish his global `AGENTS.md` or his skills, and this repo does not
+> reproduce them. What it implements is the *approach* he describes — the repo
+> layout, the per-skill routing, the render-and-sync pipeline — with placeholder
+> content written from scratch for you to replace.
+
+The one part of his setup that *is* public is the project-level
+[`AGENTS.md` in t3code](https://github.com/pingdotgg/t3code/blob/main/AGENTS.md).
+Read that one directly; `examples/project-agents-md/` covers the same ground as a
+fill-in template.
 
 ## How to use this
 
