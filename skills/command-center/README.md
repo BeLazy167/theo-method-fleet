@@ -9,9 +9,7 @@ synced outward. `metadata.scope` is `command-center`.
 
 Current members:
 
-- `provision-box` — brings a new machine up to fleet standard. Runs from the
-  machine doing the provisioning, not the one being provisioned.
+- `provision-box` — brings a new machine up to fleet standard. Runs from the machine doing the provisioning, not the one being provisioned.
 - `apply-fleet` — syncs this repo out to every box that should receive it.
 
-If a skill here stops being leader-specific, move it to `universal/` and update
-`metadata.scope`.
+If a skill here stops being leader-specific, move it to `universal/` and update `metadata.scope`.

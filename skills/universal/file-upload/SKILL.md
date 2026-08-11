@@ -9,13 +9,11 @@ metadata:
 
 # Upload a file and get a public URL
 
-Uploads any local file to the user's public file host and returns a URL you can
-paste into a PR, an issue, or a chat message.
+Uploads any local file to the user's public file host and returns a URL you can paste into a PR, an issue, or a chat message.
 
 ## Prerequisites
 
-Requires `FILE_HOST_URL` and `FILE_HOST_TOKEN`. If either is unset, tell the user
-instead of guessing a host or a token.
+Requires `FILE_HOST_URL` and `FILE_HOST_TOKEN`. If either is unset, tell the user instead of guessing a host or a token.
 
 ## Upload
 
@@ -26,11 +24,9 @@ curl -sf -X POST "$FILE_HOST_URL" \
   -F "name=<basename>"
 ```
 
-Use only the file's base name, such as `login-flow.mp4`. The service slugifies it
-and adds a random suffix, so names do not need to be unique.
+Use only the file's base name, such as `login-flow.mp4`. The service slugifies it and adds a random suffix, so names do not need to be unique.
 
-The response body is the public URL. Return it verbatim. Do not wrap it, shorten
-it, or fetch it back to "verify".
+The response body is the public URL. Return it verbatim. Do not wrap it, shorten it, or fetch it back to "verify".
 
 ## Embedding
 
@@ -43,5 +39,4 @@ A short GIF often reads better than a long video in a PR:
 ffmpeg -i in.mp4 -vf "fps=12,scale=900:-1:flags=lanczos" -loop 0 out.gif
 ```
 
-Keep GIFs under 10MB. If the recording is long, upload the video and add a GIF of
-the key moment.
+Keep GIFs under 10MB. If the recording is long, upload the video and add a GIF of the key moment.

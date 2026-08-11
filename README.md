@@ -1,37 +1,20 @@
 # theo-method-fleet
 
-A **fleet repo** template: one place to keep your global agent instructions and
-your skills, tiered and synced to every machine you work on.
+A **fleet repo** template: one place to keep your global agent instructions and your skills, tiered and synced to every machine you work on.
 
-Structured after the approach [Theo describes in this
-video](https://youtu.be/e1snsuY4lTI).
+Structured after the approach [Theo describes in this video](https://youtu.be/e1snsuY4lTI).
 
-> **Not affiliated with Theo or T3.** These are not his files. He deliberately
-> does not publish his global `AGENTS.md` or his skills, and this repo does not
-> reproduce them. What it implements is the *approach* he describes — the repo
-> layout, the per-skill routing, the render-and-sync pipeline — with placeholder
-> content written from scratch for you to replace.
+> **Not affiliated with Theo or T3.** These are not his files. He deliberately does not publish his global `AGENTS.md` or his skills, and this repo does not reproduce them. What it implements is the *approach* he describes — the repo layout, the per-skill routing, the render-and-sync pipeline — with placeholder content written from scratch for you to replace.
 
-The one part of his setup that *is* public is the project-level
-[`AGENTS.md` in t3code](https://github.com/pingdotgg/t3code/blob/main/AGENTS.md).
-Read that one directly; `examples/project-agents-md/` covers the same ground as a
-fill-in template.
+The one part of his setup that *is* public is the project-level [`AGENTS.md` in t3code](https://github.com/pingdotgg/t3code/blob/main/AGENTS.md). Read that one directly; `examples/project-agents-md/` covers the same ground as a fill-in template.
 
 ## How to use this
 
-Fork it, then delete my opinions and write yours. Every rule in `corefiles/` and
-every skill in `skills/` is a worked example of the right *shape*, not advice you
-should adopt unread.
+Fork it, then delete my opinions and write yours. Every rule in `corefiles/` and every skill in `skills/` is a worked example of the right *shape*, not advice you should adopt unread.
 
-That is not modesty, it is the whole point. These files shape how every agent
-behaves across everything you do, and the useful ones encode failures you have
-actually hit — your models, your repos, your habits. A rule copied from a
-stranger fixes a problem you may not have, and costs context on every single
-request forever.
+That is not modesty, it is the whole point. These files shape how every agent behaves across everything you do, and the useful ones encode failures you have actually hit — your models, your repos, your habits. A rule copied from a stranger fixes a problem you may not have, and costs context on every single request forever.
 
-The one step that makes this yours is `audit-agent-history`: point it at your own
-session transcripts, find what your agents actually get wrong, and write rules
-for that. Start there.
+The one step that makes this yours is `audit-agent-history`: point it at your own session transcripts, find what your agents actually get wrong, and write rules for that. Start there.
 
 ## What you get
 
@@ -63,9 +46,7 @@ metadata:
   scope: fleet                  # fleet = every box, command-center = leader only
 ```
 
-`apply-fleet` renders those into `snapshots/<harness>/`, then rsyncs each snapshot
-out. The snapshot is a complete intended state, which is what makes `--delete`
-safe on the target.
+`apply-fleet` renders those into `snapshots/<harness>/`, then rsyncs each snapshot out. The snapshot is a complete intended state, which is what makes `--delete` safe on the target.
 
 ## Skills
 
@@ -82,20 +63,11 @@ safe on the target.
 
 ## The three ideas worth keeping
 
-**1. A skill description is a trigger, not a summary.** Descriptions load into
-context for every conversation. Bodies load only when the skill fires. So the
-description's job is to carry the keywords that tell the model *when* to pull the
-skill in. A description that explains everything the skill does becomes a
-shortcut the model takes instead of reading the skill.
+**1. A skill description is a trigger, not a summary.** Descriptions load into context for every conversation. Bodies load only when the skill fires. So the description's job is to carry the keywords that tell the model *when* to pull the skill in. A description that explains everything the skill does becomes a shortcut the model takes instead of reading the skill.
 
-**2. `AGENTS.md` is not a README.** A README helps a human decide whether to use
-your project. `AGENTS.md` tells an agent how to change it safely, and what it
-must never break. Overlap is fine. Substitution is not.
+**2. `AGENTS.md` is not a README.** A README helps a human decide whether to use your project. `AGENTS.md` tells an agent how to change it safely, and what it must never break. Overlap is fine. Substitution is not.
 
-**3. The goal is communication, not competence.** Most of these rules do not make
-the model better at writing code. They make its output readable by you: PR titles
-that say why, descriptions that open with the problem, mocks labeled A/B/C so a
-reply can be three characters long.
+**3. The goal is communication, not competence.** Most of these rules do not make the model better at writing code. They make its output readable by you: PR titles that say why, descriptions that open with the problem, mocks labeled A/B/C so a reply can be three characters long.
 
 ## Setup
 
@@ -104,10 +76,8 @@ reply can be three characters long.
 ./bin/install-local   # link this machine's snapshot into ~/.claude and ~/.codex
 ```
 
-Then edit `boxes/machines.json` for your real machines, and stand up the two
-endpoints in `services/README.md` if you want the upload skills to work.
+Then edit `boxes/machines.json` for your real machines, and stand up the two endpoints in `services/README.md` if you want the upload skills to work.
 
 ## Where to start
 
-Run the `audit-agent-history` skill against your own transcripts before you write
-a single rule. Rules written from memory fix problems you do not have.
+Run the `audit-agent-history` skill against your own transcripts before you write a single rule. Rules written from memory fix problems you do not have.
