@@ -5,6 +5,7 @@ metadata:
   harness: [claude, codex]
   platform: [darwin, linux]
   scope: fleet
+  requires: [FILE_HOST_URL, FILE_HOST_TOKEN]
 ---
 
 # Upload a file and get a public URL

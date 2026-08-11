@@ -15,7 +15,6 @@ when it lands or when you need a decision.
 ## The loop
 
 1. If the harness has PR monitoring tools, use them so you react when comments arrive.Otherwise poll every few minutes with `gh pr view` and `gh pr checks`.
-
 2. Only act on checks and comments newer than the latest push. Ignore stale ones.
 3. Verify every bot finding against the source before you change code. Review bots are helpful and often wrong.
 4. Fix real findings and real CI failures. Tell repository failures apart from infrastructure flakes. Re-run flakes once; do not "fix" them with code.

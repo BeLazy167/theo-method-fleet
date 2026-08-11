@@ -22,6 +22,23 @@ for harness in claude codex; do
   done
   echo "installed $snap -> $dest"
 
+  # Drop skills whose required env vars are unset on this machine. A skill that
+  # can only fail is worse than a missing one: it still costs description tokens
+  # on every request.
+  if [ -s "$snap/.requires" ]; then
+    while read -r skill vars; do
+      [ -n "$skill" ] || continue
+      missing=""
+      for v in $vars; do
+        [ -n "${!v:-}" ] || missing="$missing $v"
+      done
+      if [ -n "$missing" ]; then
+        rm -rf "$dest/skills/$skill"
+        echo "  skipped $skill — unset:$missing"
+      fi
+    done < "$snap/.requires"
+  fi
+
   if [ "$LEADER" = "1" ]; then
     for skill in skills/command-center/*/; do
       [ -f "$skill/SKILL.md" ] || continue

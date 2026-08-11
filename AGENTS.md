@@ -45,7 +45,7 @@ Each tier directory has a `README.md` saying what belongs there and where it ins
 3. **Bad example, good example.** Models steer better on a contrasting pair than on a paragraph of rules. Pull the bad example from something that actually annoyed me.
 4. **Shorter is better, as long as the context survives.** Delete lines that restate the obvious. Keep the line that names a specific past failure.
 5. **Do not add a skill for a thing that happened once.** Add it when the same correction has been made three times. Use the `audit-agent-history` skill to check whether it really recurs.
-6. **Routing lives in frontmatter, not in the path.** Every skill carries `metadata.harness`, `metadata.platform`, and `metadata.scope`. Set them when you add a skill. When a skill stops being tier-specific, move the directory *and* update `metadata.scope` — a moved directory with stale metadata still routes the old way.
+6. **Routing lives in frontmatter, not in the path.** Every skill carries `metadata.harness`, `metadata.platform`, and `metadata.scope`, plus `metadata.requires` when it depends on credentials. Set them when you add a skill. When a skill stops being tier-specific, move the directory *and* update `metadata.scope` — a moved directory with stale metadata still routes the old way.
 
 ## Rules for editing global files
 

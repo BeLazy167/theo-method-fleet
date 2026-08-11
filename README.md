@@ -44,7 +44,10 @@ metadata:
   harness: [claude, codex]      # which harnesses get it
   platform: [darwin, linux]     # which OSes it can run on
   scope: fleet                  # fleet = every box, command-center = leader only
+  requires: [API_TOKEN]         # optional: env vars the skill cannot work without
 ```
+
+A skill listing `requires` is rendered but not installed on a machine where those variables are unset — a skill that can only fail is worse than a missing one, since it still costs description tokens on every request.
 
 `apply-fleet` renders those into `snapshots/<harness>/`, then rsyncs each snapshot out. The snapshot is a complete intended state, which is what makes `--delete` safe on the target.
 

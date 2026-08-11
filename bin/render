@@ -72,6 +72,7 @@ def main() -> int:
         if dest.exists():
             shutil.rmtree(dest)
         (dest / "skills").mkdir(parents=True)
+        gated: list[str] = []
 
         for name in CORE[harness]:
             src = ROOT / "corefiles" / name
@@ -94,6 +95,15 @@ def main() -> int:
                 if f.is_file():
                     shutil.copy2(f, target / f.name)
             counts[harness] += 1
+
+            # A skill that needs credentials is still rendered, because whether a
+            # given box has them is not knowable here. install-local and
+            # apply-fleet read this file and skip what the target cannot satisfy.
+            required = meta.get("requires") or []
+            if required:
+                gated.append(f"{name} {' '.join(required)}")
+
+        (dest / ".requires").write_text("\n".join(gated) + ("\n" if gated else ""))
 
     for harness in HARNESSES:
         print(f"snapshots/{harness}: {counts[harness]} skills")

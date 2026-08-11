@@ -27,6 +27,7 @@ metadata:
   harness: [claude, codex]      # which harnesses get it
   platform: [darwin, linux]     # which OSes it can run on
   scope: fleet                  # fleet = every box, command-center = leader only
+  requires: [API_TOKEN]         # optional: env vars the skill cannot work without
 ```
 
 The directory a skill lives in is for humans. `metadata` is what decides where it lands. When the two disagree, the metadata is right and the directory should move.

@@ -5,6 +5,7 @@ metadata:
   harness: [claude, codex]
   platform: [darwin, linux]
   scope: fleet
+  requires: [POSTPLAN_HOST, POSTPLAN_TOKEN]
 ---
 
 # Communicate in HTML
